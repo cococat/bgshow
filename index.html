@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>bgshow</title>
+	<style type="text/css">
+	*{margin: 0;padding: 0;border: 0;}
+	.one{padding: 20px;}
+	.title{font-size: 20px;font-weight: bold;}
+	.main{display: -webkit-box;}
+	.demo{width: 100px;height:200px;border: 3px solid #999;resize: both; overflow: hidden;}
+	.op{margin-left: 30px;}
+	.op>div{margin: 20px 0;}
+	.op input,.op .code{height: 16px;line-height: 16px;border: 1px solid #000;}
+	.op .code{width:200px;height:100px;margin-top: 10px}
+	.op button{
+		background:#000;
+		color: #fff;
+		border-radius:10px;
+		height: 30px;
+		line-height: 30px;
+		margin:0 10px ; 
+		width: 50px;
+		text-align: center;
+	}
+	</style>
+	<script src="js/react.js"></script>
+	<script src="js/react-dom.js"></script>
+	<script src="js/jquery.min.js"></script>
+	<script src="js/browser.min.js"></script>
+</head>
+<body>
+	<div id="container"></div>
+	<script type="text/babel" >
+		$(function(){
+			var Demo = React.createClass({
+				render : function  () {
+					return <div className="demo" style={{background:"#"+this.props.bg}} id={this.props.id}></div>;
+				}
+			});
+			var One = React.createClass({
+				text : "",
+				random:(function(){
+					return Math.floor(Math.random()*100000);
+				})(),
+				getInitialState:function(){
+					this.text="112233";
+					return {
+						bg:"112233",
+						code : "background:#112233;"
+					}
+				},
+				test:function(){
+					var reg = new RegExp(this.props.reg,"i");
+					return reg.test(this.text);
+				},
+				changeState:function(){
+					if(this.test()){
+						this.setState({bg:this.text,code:"background:#"+this.text+";"})
+					}else{
+						this.setState({code:this.props.error})
+					}
+					
+				},
+				onchange:function(event){
+					this.text = event.target.value;
+				},
+				render:function(){
+					return (<div className="one" >
+						<div className="title" reg={this.props.reg} error={this.props.error}>纯色背景</div>
+						<div className="main">
+							<Demo bg={this.state.bg} id={"demo_"+this.random}/>
+							<div className="op">
+								<div>输入颜色( 16进制):
+									<input type="text"  defaultValue={this.state.bg}  onChange={this.onchange}/>
+									<button onClick={this.changeState}>确定</button>
+								</div>
+								<div>代码:<div className="code">{this.state.code}</div></div>
+							</div>
+						</div>
+					</div>);
+				}
+			});
+			console.log(1)
+			ReactDOM.render(<One bg="000" error="请输入正确的十六进制颜色值，如000｜2233dd" reg="(^[0-9a-f]{6})$|(^[0-9a-f]{3}$)"/>,document.getElementById('container'));
+		});
+	</script>
+</body>
+</html>
